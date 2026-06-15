@@ -77,16 +77,16 @@
   a.card.is-award::before{
     content:"";position:absolute;inset:-40%;border-radius:inherit;z-index:0;pointer-events:none;
     background:linear-gradient(var(--shine-angle,115deg),
-      transparent 41%,
-      var(--shine) 47%,
+      transparent 12%,
+      var(--shine) 38%,
       var(--sheen) 50%,
-      var(--shine) 53%,
-      transparent 59%);
+      var(--shine) 62%,
+      transparent 88%);
     background-size:240% 240%;
     background-position:var(--mx,50%) var(--my,50%);
-    opacity:0;transition:opacity .4s ease;mix-blend-mode:screen;
+    opacity:0;transition:opacity .45s ease;mix-blend-mode:screen;
   }
-  a.card.is-award:hover::before{opacity:1}
+  a.card.is-award:hover::before{opacity:.55}
 
   /* top sheen line (winners only) */
   a.card.is-award::after{
@@ -120,8 +120,8 @@
   /* ===== Gold · 黑金 ===== */
   .award-gold{
     --clr:#e8c074; --edge:#d4af37;
-    --shine:rgba(232,192,116,.42); --shine-mid:rgba(212,175,55,.12);
-    --glow:rgba(212,175,55,.34); --sheen:rgba(245,217,138,.75);
+    --shine:rgba(232,192,116,.24); --shine-mid:rgba(212,175,55,.1);
+    --glow:rgba(212,175,55,.34); --sheen:rgba(245,217,138,.46);
     --inner-hi:rgba(232,192,116,.45);
     --title-grad:linear-gradient(95deg,#e8c074,#fff0c2 35%,#b8941f 65%,#f5d98a);
     background:linear-gradient(180deg,#1c170d 0%,#0b0805 100%);
@@ -129,8 +129,8 @@
   /* ===== Silver · 银光 ===== */
   .award-silver{
     --clr:#d6dde6; --edge:#aab4c2;
-    --shine:rgba(230,236,244,.5); --shine-mid:rgba(190,200,214,.14);
-    --glow:rgba(190,200,214,.3); --sheen:rgba(255,255,255,.85);
+    --shine:rgba(230,236,244,.28); --shine-mid:rgba(190,200,214,.12);
+    --glow:rgba(190,200,214,.3); --sheen:rgba(255,255,255,.5);
     --inner-hi:rgba(230,236,244,.5);
     --title-grad:linear-gradient(95deg,#cfd8e3,#ffffff 40%,#9aa3b0 65%,#e8edf2);
     background:linear-gradient(180deg,#171a20 0%,#0b0d11 100%);
@@ -138,8 +138,8 @@
   /* ===== Bronze · 铜光 ===== */
   .award-bronze{
     --clr:#e0a06a; --edge:#cd7f32;
-    --shine:rgba(230,168,106,.42); --shine-mid:rgba(205,127,50,.13);
-    --glow:rgba(205,127,50,.32); --sheen:rgba(240,196,154,.78);
+    --shine:rgba(230,168,106,.24); --shine-mid:rgba(205,127,50,.1);
+    --glow:rgba(205,127,50,.32); --sheen:rgba(240,196,154,.48);
     --inner-hi:rgba(230,168,106,.45);
     --title-grad:linear-gradient(95deg,#e6a86a,#f3cda0 38%,#9c5a22 66%,#cd7f32);
     background:linear-gradient(180deg,#1b140d 0%,#0b0806 100%);
@@ -147,8 +147,8 @@
   /* ===== AI 驾驭奖 · 金属虹彩光泽 ===== */
   .award-ai{
     --clr:#9fe6da; --edge:#7ee0c8;
-    --shine:rgba(180,235,224,.45); --shine-mid:rgba(180,200,255,.16);
-    --glow:rgba(126,224,200,.3); --sheen:rgba(220,240,255,.85);
+    --shine:rgba(180,235,224,.26); --shine-mid:rgba(180,200,255,.13);
+    --glow:rgba(126,224,200,.3); --sheen:rgba(220,240,255,.5);
     --inner-hi:rgba(180,235,224,.5);
     --title-grad:linear-gradient(95deg,#b8f0e6,#cfd0ff 30%,#f5c8e8 55%,#b8f0e6 80%);
     background:linear-gradient(180deg,#10171c 0%,#090d11 100%);
