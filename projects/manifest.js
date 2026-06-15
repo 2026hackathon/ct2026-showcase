@@ -53,7 +53,7 @@ window.TEAMS = [
     id:"dm-seek", order:7, color:"#39c5cf",
     team:"Team Aback", product:"DM-Seek",
     tagline:"软件研发的「理解 × 追溯 × 验证」基础设施",
-    members:["Dylan","Jason","Mantee"], presenter:"Dylan",
+    members:["Dylan","Jason","Mantee"], presenter:"Mantee",
     repo:"https://github.com/2026hackathon/dm-seek",
   },
   {

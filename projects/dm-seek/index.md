@@ -1,3 +1,22 @@
+# 写在最前
+
+> Hi，我们是本届 CT Hackathon 的 **Team Aback**。感谢队友 **Mantee** 和 **Jason** 的付出，恭喜我们顺利完赛。
+>
+> **特别鸣谢**
+> - **Jay** — 我们使用了 Jay 开发的 [Knowlery 插件](https://jayjiangct.github.io/knowlery/zh/) 实现了 Demo 的知识库
+> - **Dobby** — 我们的荣誉队长，真的很好 Rua
+>
+> **重要**：使用 dm-seek Demo 前，请务必将 Claude Code 模型配置修改为 **DeepSeek**，并确保已执行 `/logout`。Agent Team **真的很贵**。
+> 如果你还没有DeepSeek API Key，请联系**Jakob**。
+>
+> 本 Demo 未经深度优化，还存在许多问题，欢迎你提供反馈帮助我们改进。
+>
+> — *Dylan*
+
+![Dobby](imgs/dobby.jpg)
+
+---
+
 ## 解决什么问题
 
 软件开发界的「马冬梅」事件：
