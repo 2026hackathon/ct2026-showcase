@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目详情 · CT 2026 Hackathon</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel-2:#1c232d; --border:#2a313c;
+    --text:#e6edf3; --muted:#9aa7b4; --faint:#6b7785; --accent:#58a6ff;
+    --clr:#58a6ff; --clr-soft:rgba(88,166,255,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:30px 28px 100px}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--faint);text-decoration:none;font-size:13.5px;margin-bottom:26px}
+  .back:hover{color:var(--clr)}
+
+  .hd{border-bottom:1px solid var(--border);padding-bottom:26px;margin-bottom:34px}
+  .hd-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .team-chip{font-size:12px;letter-spacing:.6px;padding:4px 12px;border-radius:999px;background:var(--clr-soft);color:var(--clr);font-weight:600}
+  .award-banner{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;padding:5px 14px;border-radius:999px;border:1px solid}
+  .award-banner .ico{font-size:16px}
+  .award-gold{color:#f7d774;border-color:rgba(247,215,116,.5);background:rgba(247,215,116,.12)}
+  .award-silver{color:#cfd8e3;border-color:rgba(207,216,227,.5);background:rgba(207,216,227,.12)}
+  .award-bronze{color:#e0a06a;border-color:rgba(224,160,106,.5);background:rgba(224,160,106,.12)}
+  .award-ai{color:#7ee0c8;border-color:rgba(126,224,200,.5);background:rgba(126,224,200,.12)}
+  h1.title{font-size:34px;font-weight:800;letter-spacing:-.5px}
+  .tagline{font-size:16px;color:var(--muted);margin-top:10px;font-weight:500}
+  .members{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+  .members .mb{font-size:12.5px;padding:4px 11px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--muted)}
+  .members .mb.host{background:var(--clr-soft);border-color:var(--clr);color:var(--clr);font-weight:700}
+  .repo{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--clr);text-decoration:none;margin-top:18px}
+  .repo:hover{text-decoration:underline}
+
+  /* ---- rendered markdown ---- */
+  .md{font-size:15.5px}
+  .md h1{font-size:25px;font-weight:800;margin:38px 0 14px}
+  .md h2{font-size:20px;font-weight:800;margin:36px 0 14px;padding-left:13px;border-left:4px solid var(--clr)}
+  .md h3{font-size:16.5px;font-weight:700;margin:26px 0 10px;color:var(--clr)}
+  .md p{margin:12px 0;color:var(--text)}
+  .md ul,.md ol{margin:12px 0 12px 4px;padding-left:22px}
+  .md li{margin:7px 0}
+  .md li::marker{color:var(--clr)}
+  .md a{color:var(--clr)}
+  .md strong{color:#fff;font-weight:700}
+  .md code{background:var(--panel-2);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:13.5px}
+  .md pre{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;overflow:auto;margin:16px 0}
+  .md pre code{background:none;border:none;padding:0;font-size:13px;line-height:1.6}
+  .md blockquote{margin:16px 0;padding:8px 18px;border-left:4px solid var(--clr);background:var(--panel);border-radius:0 10px 10px 0;color:var(--muted)}
+  .md img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);margin:14px 0;display:block}
+  .md video,.md iframe{max-width:100%;border-radius:12px;border:1px solid var(--border);margin:14px 0;display:block}
+  .md table{border-collapse:collapse;width:100%;margin:18px 0;font-size:14px}
+  .md th,.md td{border:1px solid var(--border);padding:9px 13px;text-align:left}
+  .md th{background:var(--panel-2);font-weight:700}
+  .md hr{border:none;border-top:1px solid var(--border);margin:30px 0}
+  /* image gallery: consecutive images wrap nicely */
+  .md p:has(> img:nth-child(2)){display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .md p:has(> img:nth-child(2)) img{margin:0}
+
+  .err{color:var(--faint);padding:40px 0}
+  .err code{background:var(--panel-2);padding:2px 7px;border-radius:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回项目一览</a>
+  <div id="head"></div>
+  <div class="md" id="md"></div>
+</div>
+
+<script src="lib/marked.min.js"></script>
+<script src="projects/manifest.js"></script>
+<script>
+  const params=new URLSearchParams(location.search);
+  const id=params.get("p");
+  const TEAMS=window.TEAMS||[];
+  const t=TEAMS.find(x=>x.id===id);
+  const headEl=document.getElementById("head");
+  const mdEl=document.getElementById("md");
+
+  function shade(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`}
+
+  if(!t){
+    headEl.innerHTML=`<div class="err">未找到项目 <code>${id||"(空)"}</code>。<a class="repo" href="index.html">回到一览</a></div>`;
+  }else{
+    document.title=`${t.product} · CT 2026 Hackathon`;
+    document.documentElement.style.setProperty("--clr",t.color);
+    document.documentElement.style.setProperty("--clr-soft",shade(t.color,.16));
+    const award=t.award?`<div class="award-banner award-${t.award.rank}"><span class="ico">${t.award.icon}</span>${t.award.label}</div>`:"";
+    const members=(t.members||[]).map(m=>`<span class="mb${m===t.presenter?" host":""}">${m}${m===t.presenter?" · 路演":""}</span>`).join("");
+    const repo=t.repo&&t.repo.startsWith("http")?`<a class="repo" href="${t.repo}" target="_blank">↗ 代码仓库：${t.repo.replace("https://","")}</a>`:"";
+    headEl.innerHTML=`
+      <div class="hd">
+        <div class="hd-top"><span class="team-chip">第 ${t.order} 个路演 · ${t.team}</span>${award}</div>
+        <h1 class="title">${t.product}</h1>
+        <div class="tagline">${t.tagline||""}</div>
+        <div class="members">${members}</div>
+        ${repo?("<div>"+repo+"</div>"):""}
+      </div>`;
+
+    const base=`projects/${t.id}/`;
+    fetch(base+"index.md?v="+Date.now())
+      .then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})
+      .then(src=>{
+        mdEl.innerHTML=marked.parse(src);
+        // 把 Markdown 里的相对路径（图片/视频/链接）指向该队目录
+        mdEl.querySelectorAll("img,source,video,iframe,a").forEach(el=>{
+          const attr=el.tagName==="A"?"href":"src";
+          const v=el.getAttribute(attr);
+          if(v && !/^(https?:|\/|#|data:|mailto:)/.test(v)){el.setAttribute(attr,base+v)}
+        });
+      })
+      .catch(e=>{
+        mdEl.innerHTML=`<div class="err">还没有内容，或本地直接双击打开导致无法读取 Markdown（浏览器限制）。<br>
+        请该队编辑 <code>${base}index.md</code>；本地预览请在仓库根目录运行 <code>python3 -m http.server</code> 后访问 <code>localhost:8000</code>。<br><br>（错误：${e.message}）</div>`;
+      });
+  }
+</script>
+</body>
+</html>

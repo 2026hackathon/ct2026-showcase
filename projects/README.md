@@ -1,49 +1,66 @@
-# 项目数据 · 各队自维护
+# 各队自维护说明
 
-展示页（`../index.html`）的内容来自这个目录。**每个队伍一个 `.js` 文件，改自己那份即可**，互不影响。
+展示站结构：
 
-| 文件 | 队伍 | 产品 |
-| --- | --- | --- |
-| `agentboss.js` | 乘风破限 | Agent Boss |
-| `all-in-local-agent.js` | 都选 C | All-in Local Agent |
-| `core-ai-team.js` | Core-AI Team | Core-AI Team |
-| `drape.js` | 干饭搭子 | Drape |
-| `next.js` | 问题不大 | Next |
-| `diggy.js` | 打出风采 | Diggy 挖挖 |
-| `dm-seek.js` | Team Aback | DM-Seek |
-| `menupilot.js` | 爱吃香菜 | MenuPilot |
+```
+index.html              # 入口导航（项目卡片列表）
+team.html               # 项目详情页模板（一般不用动）
+lib/marked.min.js       # Markdown 解析器（本地自带）
+projects/
+  manifest.js           # 队伍清单（卡片元信息：名字/排序/奖项/路演人…）
+  <你的队>/
+    index.md            # ★ 你的页面正文，自由写 Markdown
+    *.png / *.mp4 ...   # ★ 你的图片、视频，直接丢这个目录
+```
 
-## 怎么改
+## 你要改的只有两个地方
 
-打开你队伍的文件，编辑 `window.PROJECTS.push({ ... })` 里的字段：
+### 1）`projects/<你的队>/index.md` —— 页面正文（重点）
 
-| 字段 | 必填 | 说明 |
-| --- | :---: | --- |
-| `id` | ✓ | 唯一标识，别和别队重复 |
-| `team` / `product` | ✓ | 队名 / 产品名 |
-| `color` | ✓ | 主题色（十六进制，如 `#58a6ff`），tab 圆点、强调文字都用它 |
-| `order` | ✓ | 路演顺序，决定左侧排序 |
-| `members` | ✓ | 队员数组，如 `["A","B"]` |
-| `presenter` | ✓ | 路演人（须是 members 里的某个名字，会高亮标「· 路演」）|
-| `tagline` | ✓ | 一句话标语 |
-| `problem` | ✓ | 解决什么问题 |
-| `solution` | ✓ | 怎么解决 |
-| `points` | ✓ | 关键亮点数组，可用 `<b>...</b>` 加粗 |
-| `award` | | 奖项，如 `{rank:"gold", icon:"🥇", label:"一等奖 · 金牌"}`（rank 取 gold/silver/bronze/ai）|
-| `modules` | | 产品组成卡片：`[["名称","说明"], ...]` |
-| `stats` | | 硬核数字：`[["515","测试用例"], ...]` |
-| `diff` | | 差异化优势标签数组 |
-| `stack` | | 技术栈标签数组 |
-| `repo` | | 仓库地址（`http` 开头会渲染成可点链接）|
-| `assets` | | 提交物清单，显示在页脚 |
+纯 Markdown，想写什么写什么。标题、列表、表格、引用、代码块都支持。
 
-非必填字段不写或删掉即可，对应板块会自动隐藏。
+**加图片**：把图片文件丢到自己目录里，然后：
 
-## 新增一个项目
+```markdown
+![营销看板](dashboard.png)
+```
 
-1. 在本目录新建 `你的产品.js`，照其它文件的格式写 `window.PROJECTS.push({...})`。
-2. 在 `../index.html` 的 `<!-- 每个项目一个文件 -->` 注释下，加一行 `<script src="projects/你的产品.js"></script>`。
+连续多张图会自动排成画廊：
+
+```markdown
+![](01.png)
+![](02.png)
+![](03.png)
+```
+
+**加视频 / 在线 Demo**（Markdown 里可直接写 HTML）：
+
+```html
+<video src="demo.mp4" controls></video>
+<iframe src="https://你的demo地址" height="640"></iframe>
+```
+
+> 图片/视频用**文件名相对路径**即可（相对你自己的目录），页面会自动补全路径。
+
+### 2）`projects/manifest.js` —— 卡片信息（很少改）
+
+只在产品名、标语、排序、队员、路演人、奖项、仓库地址有变动时，改你那一条对象。
 
 ## 本地预览
 
-直接双击 `../index.html` 用浏览器打开即可（无需起服务器）。
+Markdown 自动渲染需要通过 http 读取文件，**直接双击打开会被浏览器拦截**。在仓库根目录跑一行：
+
+```bash
+python3 -m http.server 8000
+```
+
+然后浏览器打开 <http://localhost:8000/> 即可。线上的 GitHub Pages 不受此限制，提交后自动生效。
+
+## 想要完全自定义的页面？
+
+如果不想用 Markdown，想自己写整页 HTML/JS：在自己目录放一个 `index.html`，把 `manifest.js` 里你那条的链接指过去即可（找维护者改一下入口也行）。
+
+## 新增一个队伍
+
+1. 建目录 `projects/<id>/`，放一个 `index.md`。
+2. 在 `manifest.js` 的数组里加一条对象（参考已有格式，`id` 要和目录名一致）。

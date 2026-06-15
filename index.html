@@ -6,264 +6,90 @@
 <title>CT 2026 Hackathon · 项目一览</title>
 <style>
   :root{
-    --bg:#0d1117;
-    --panel:#161b22;
-    --panel-2:#1c232d;
-    --border:#2a313c;
-    --text:#e6edf3;
-    --muted:#9aa7b4;
-    --faint:#6b7785;
-    --accent:#58a6ff;
-    --radius:14px;
+    --bg:#0d1117; --panel:#161b22; --panel-2:#1c232d; --border:#2a313c;
+    --text:#e6edf3; --muted:#9aa7b4; --faint:#6b7785; --accent:#58a6ff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
+    background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;
+    min-height:100vh;
   }
-  .app{display:flex;height:100vh;overflow:hidden}
+  .wrap{max-width:1080px;margin:0 auto;padding:60px 28px 90px}
+  header.hero{margin-bottom:40px}
+  header.hero h1{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  header.hero p{color:var(--faint);margin-top:8px;font-size:14px}
 
-  /* ---------- Sidebar ---------- */
-  .sidebar{
-    width:300px;flex-shrink:0;
-    background:var(--panel);
-    border-right:1px solid var(--border);
-    display:flex;flex-direction:column;
-    overflow-y:auto;
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  a.card{
+    display:block;text-decoration:none;color:inherit;
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:22px 22px 20px;position:relative;overflow:hidden;
+    transition:transform .15s,border-color .15s,background .15s;
   }
-  .brand{padding:22px 22px 14px;border-bottom:1px solid var(--border)}
-  .brand h1{font-size:16px;letter-spacing:.5px;font-weight:700}
-  .brand p{font-size:12px;color:var(--faint);margin-top:4px}
-  .tabs{padding:10px 10px 24px;flex:1}
-  .tab{
-    display:flex;align-items:center;gap:12px;
-    padding:12px 14px;border-radius:10px;cursor:pointer;
-    border:1px solid transparent;transition:background .15s,border-color .15s;
-    user-select:none;
-  }
-  .tab:hover{background:var(--panel-2)}
-  .tab.active{background:var(--panel-2);border-color:var(--border)}
-  .tab .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--clr)}
-  .tab .seq{
-    width:22px;height:22px;flex-shrink:0;border-radius:7px;
+  a.card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--clr)}
+  a.card:hover{transform:translateY(-3px);border-color:var(--clr);background:var(--panel-2)}
+  .card .row1{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .card .seq{
+    width:24px;height:24px;flex-shrink:0;border-radius:7px;
     display:flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:700;color:var(--faint);
-    background:var(--bg);border:1px solid var(--border);
+    font-size:12px;font-weight:700;color:var(--clr);
+    background:var(--bg);border:1px solid var(--clr);
   }
-  .tab.active .seq{color:var(--clr-bright);border-color:var(--clr)}
-  .tab .medal{font-size:17px;flex-shrink:0;line-height:1}
-  .tab.awarded{border-color:rgba(255,255,255,.06)}
-  .tab .meta{min-width:0}
-  .tab .team{font-size:11px;color:var(--faint);letter-spacing:.4px}
-  .tab .prod{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tab.active .prod{color:var(--clr-bright)}
-
-  /* ---------- Content ---------- */
-  .content{flex:1;overflow-y:auto;position:relative}
-  .panel{display:none;padding:46px 56px 80px;max-width:1000px;margin:0 auto;animation:fade .35s ease}
-  .panel.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-  .hd{border-bottom:1px solid var(--border);padding-bottom:26px;margin-bottom:30px}
-  .hd .hd-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-  .hd .team-chip{
-    display:inline-block;font-size:12px;letter-spacing:.6px;
-    padding:4px 12px;border-radius:999px;
-    background:var(--clr-soft);color:var(--clr-bright);font-weight:600;
-  }
-  .hd h2{font-size:33px;font-weight:800;letter-spacing:-.5px}
-  .hd .tagline{font-size:16px;color:var(--muted);margin-top:10px;font-weight:500}
-  .hd .members{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
-  .hd .members .mb{font-size:12.5px;padding:4px 11px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--muted)}
-  .hd .members .mb.host{background:var(--clr-soft);border-color:var(--clr);color:var(--clr-bright);font-weight:700}
+  .card .medal{font-size:18px;line-height:1}
+  .card .team{font-size:11.5px;color:var(--faint);letter-spacing:.4px}
+  .card h2{font-size:20px;font-weight:800;color:var(--clr);margin:2px 0 8px}
+  .card .tag{font-size:13.5px;color:var(--muted);min-height:38px}
+  .card .ft{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+  .card .ft .who{font-size:12px;color:var(--faint)}
+  .card .ft .who b{color:var(--clr)}
+  .card .ft .go{font-size:13px;color:var(--clr);font-weight:600}
 
   .award-banner{
-    display:inline-flex;align-items:center;gap:7px;
-    font-size:13px;font-weight:800;letter-spacing:.5px;
-    padding:5px 14px;border-radius:999px;border:1px solid;
+    display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;
+    padding:3px 10px;border-radius:999px;border:1px solid;margin-left:auto;
   }
-  .award-banner .ico{font-size:16px}
   .award-gold{color:#f7d774;border-color:rgba(247,215,116,.5);background:rgba(247,215,116,.12)}
   .award-silver{color:#cfd8e3;border-color:rgba(207,216,227,.5);background:rgba(207,216,227,.12)}
   .award-bronze{color:#e0a06a;border-color:rgba(224,160,106,.5);background:rgba(224,160,106,.12)}
   .award-ai{color:#7ee0c8;border-color:rgba(126,224,200,.5);background:rgba(126,224,200,.12)}
 
-  .section{margin-bottom:30px}
-  .section > .label{
-    display:flex;align-items:center;gap:9px;
-    font-size:12.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-    color:var(--clr-bright);margin-bottom:13px;
-  }
-  .section > .label::before{content:"";width:4px;height:15px;border-radius:2px;background:var(--clr)}
-  .prose{color:var(--text);font-size:15.5px}
-  .prose.muted{color:var(--muted)}
-
-  ul.points{list-style:none;display:grid;gap:11px}
-  ul.points li{
-    position:relative;padding:13px 16px 13px 40px;
-    background:var(--panel);border:1px solid var(--border);border-radius:11px;
-    font-size:14.5px;
-  }
-  ul.points li::before{
-    content:"";position:absolute;left:16px;top:19px;
-    width:8px;height:8px;border-radius:50%;background:var(--clr);
-  }
-  ul.points li b{color:var(--text);font-weight:700}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:11px}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:14px 15px}
-  .card .k{font-size:13px;font-weight:700;color:var(--text)}
-  .card .v{font-size:12.5px;color:var(--muted);margin-top:4px}
-
-  .stats{display:flex;flex-wrap:wrap;gap:10px}
-  .stat{
-    background:linear-gradient(135deg,var(--clr-soft),transparent);
-    border:1px solid var(--border);border-radius:11px;padding:13px 18px;min-width:110px;
-  }
-  .stat .num{font-size:22px;font-weight:800;color:var(--clr-bright)}
-  .stat .desc{font-size:11.5px;color:var(--muted);margin-top:2px}
-
-  .tags{display:flex;flex-wrap:wrap;gap:8px}
-  .tag{font-size:12px;padding:5px 11px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--muted)}
-
-  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-  .shot{overflow:hidden;background:var(--panel);border:1px solid var(--border);border-radius:11px}
-  .shot img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:var(--bg)}
-  .shot .cap{padding:10px 12px;font-size:12.5px;font-weight:700;color:var(--text)}
-
-  .footer-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border)}
-  .repo{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent);text-decoration:none}
-  .repo:hover{text-decoration:underline}
-  .assets{font-size:12.5px;color:var(--faint)}
-
-  .empty{padding:80px 56px;color:var(--faint);font-size:15px;max-width:1000px;margin:0 auto}
-
-  @media (max-width:780px){
-    .app{flex-direction:column;height:auto}
-    .sidebar{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
-    .brand{display:none}
-    .tabs{display:flex;gap:8px;padding:12px}
-    .tab{flex-shrink:0}
-    .tab .team{display:none}
-    .content{height:auto}
-    .panel{padding:30px 22px 60px}
-  }
+  footer{margin-top:48px;color:var(--faint);font-size:12.5px;text-align:center}
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">
-      <h1>CT 2026 Hackathon</h1>
-      <p>参赛项目一览 · 按路演顺序</p>
-    </div>
-    <nav class="tabs" id="tabs"></nav>
-  </aside>
-  <main class="content" id="content"></main>
+<div class="wrap">
+  <header class="hero">
+    <h1>CT 2026 Hackathon · 项目一览</h1>
+    <p>按路演顺序排列 · 点击任意项目查看详情、图片与 Demo</p>
+  </header>
+  <div class="grid" id="grid"></div>
+  <footer>每个项目的内容由各队自行维护 · 详见 <code>projects/README.md</code></footer>
 </div>
 
-<!-- ============================================================= -->
-<!-- 每个项目一个文件，团队各自维护自己的那份；新增项目就加一行 -->
-<!-- ============================================================= -->
-<script src="projects/agentboss.js"></script>
-<script src="projects/all-in-local-agent.js"></script>
-<script src="projects/core-ai-team.js"></script>
-<script src="projects/drape.js"></script>
-<script src="projects/next.js"></script>
-<script src="projects/diggy.js"></script>
-<script src="projects/dm-seek.js"></script>
-<script src="projects/menupilot.js"></script>
-
-<!-- 渲染逻辑：一般不用改 -->
+<script src="projects/manifest.js"></script>
 <script>
-const PROJECTS = (window.PROJECTS || []).slice();
-
-function shade(hex,a){const n=parseInt(hex.slice(1),16);const r=n>>16,g=n>>8&255,b=n&255;return `rgba(${r},${g},${b},${a})`}
-
-const tabsEl=document.getElementById("tabs");
-const contentEl=document.getElementById("content");
-
-PROJECTS.sort((a,b)=>(a.order||999)-(b.order||999));
-
-if(PROJECTS.length===0){
-  contentEl.innerHTML='<div class="empty">没有加载到任何项目数据。请确认 <code>projects/</code> 目录下的脚本已被 index.html 引入。</div>';
-}
-
-PROJECTS.forEach((p,i)=>{
-  const t=document.createElement("div");
-  t.className="tab"+(i===0?" active":"")+(p.award?" awarded":"");
-  t.dataset.id=p.id;
-  t.style.setProperty("--clr",p.color);
-  t.style.setProperty("--clr-bright",p.color);
-  const medal=p.award?`<span class="medal">${p.award.icon}</span>`:`<span class="dot"></span>`;
-  t.innerHTML=`<span class="seq">${p.order}</span>${medal}<div class="meta"><div class="team">${p.team} · 路演 ${p.presenter}</div><div class="prod">${p.product}</div></div>`;
-  t.onclick=()=>select(p.id);
-  tabsEl.appendChild(t);
-
-  const panel=document.createElement("section");
-  panel.className="panel"+(i===0?" active":"");
-  panel.id="panel-"+p.id;
-  panel.style.setProperty("--clr",p.color);
-  panel.style.setProperty("--clr-bright",p.color);
-  panel.style.setProperty("--clr-soft",shade(p.color,.16));
-
-  const awardBanner=p.award?`<div class="award-banner award-${p.award.rank}"><span class="ico">${p.award.icon}</span>${p.award.label}</div>`:"";
-  const memberHtml=(p.members||[]).map(m=>`<span class="mb${m===p.presenter?" host":""}">${m}${m===p.presenter?" · 路演":""}</span>`).join("");
-
-  let html=`
-    <div class="hd">
-      <div class="hd-top"><span class="team-chip">第 ${p.order} 个路演 · ${p.team}</span>${awardBanner}</div>
-      <h2>${p.product}</h2>
-      <div class="tagline">${p.tagline}</div>
-      <div class="members">${memberHtml}</div>
-    </div>
-    <div class="section">
-      <div class="label">解决什么问题</div>
-      <div class="prose muted">${p.problem}</div>
-    </div>
-    <div class="section">
-      <div class="label">怎么解决</div>
-      <div class="prose">${p.solution}</div>
-    </div>
-    <div class="section">
-      <div class="label">关键亮点</div>
-      <ul class="points">${(p.points||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
-    </div>`;
-
-  if(p.gallery){
-    html+=`<div class="section"><div class="label">产品截图</div><div class="gallery">${p.gallery.map(g=>`<figure class="shot"><img src="${g[1]}" alt="${p.product} · ${g[0]}" loading="lazy"><figcaption class="cap">${g[0]}</figcaption></figure>`).join("")}</div></div>`;
-  }
-  if(p.modules){
-    html+=`<div class="section"><div class="label">产品组成</div><div class="grid">${p.modules.map(m=>`<div class="card"><div class="k">${m[0]}</div><div class="v">${m[1]}</div></div>`).join("")}</div></div>`;
-  }
-  if(p.stats){
-    html+=`<div class="section"><div class="label">硬核成果</div><div class="stats">${p.stats.map(s=>`<div class="stat"><div class="num">${s[0]}</div><div class="desc">${s[1]}</div></div>`).join("")}</div></div>`;
-  }
-  if(p.diff){
-    html+=`<div class="section"><div class="label">差异化优势</div><div class="tags">${p.diff.map(d=>`<span class="tag">${d}</span>`).join("")}</div></div>`;
-  }
-  if(p.stack){
-    html+=`<div class="section"><div class="label">技术栈</div><div class="tags">${p.stack.map(d=>`<span class="tag">${d}</span>`).join("")}</div></div>`;
-  }
-
-  const repoHtml = p.repo && p.repo.startsWith("http")
-    ? `<a class="repo" href="${p.repo}" target="_blank">↗ ${p.repo.replace("https://","")}</a>`
-    : `<span class="assets">代码仓库：${p.repo||"待填写"}</span>`;
-  html+=`<div class="footer-row">${repoHtml}<span class="assets">${p.assets||""}</span></div>`;
-
-  panel.innerHTML=html;
-  contentEl.appendChild(panel);
-});
-
-function select(id){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.id===id));
-  document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id==="panel-"+id));
-  contentEl.scrollTop=0;
-}
+  const TEAMS=(window.TEAMS||[]).slice().sort((a,b)=>(a.order||999)-(b.order||999));
+  const grid=document.getElementById("grid");
+  TEAMS.forEach(t=>{
+    const a=document.createElement("a");
+    a.className="card";
+    a.href="team.html?p="+encodeURIComponent(t.id);
+    a.style.setProperty("--clr",t.color);
+    const medal=t.award?`<span class="medal">${t.award.icon}</span>`:"";
+    const award=t.award?`<span class="award-banner award-${t.award.rank}">${t.award.label}</span>`:"";
+    a.innerHTML=`
+      <div class="row1"><span class="seq">${t.order}</span>${medal}
+        <span class="team">${t.team}</span>${award}</div>
+      <h2>${t.product}</h2>
+      <div class="tag">${t.tagline}</div>
+      <div class="ft">
+        <span class="who">${(t.members||[]).length} 人 · 路演 <b>${t.presenter}</b></span>
+        <span class="go">查看详情 →</span>
+      </div>`;
+    grid.appendChild(a);
+  });
+  if(TEAMS.length===0){grid.innerHTML='<p style="color:var(--faint)">没有读到 projects/manifest.js</p>';}
 </script>
 </body>
 </html>
