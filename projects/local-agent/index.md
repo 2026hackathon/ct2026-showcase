@@ -25,9 +25,6 @@
 | **Relay** | Node WebSocket · 连接管理、路由转发、限流 |
 | **Nutrition App** | 首个远端场景 · 拍食物拿结构化营养分析 |
 
-## Demo / 截图
+## 产品预览
 
-> 把图片放到本目录（`projects/local-agent/`）后引用：`![架构图](arch.png)`
-> 视频：`<video src="demo.mp4" controls></video>`
-
-_（待补充）_
+![All-in Local Agent product overview](promo.png)

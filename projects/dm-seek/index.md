@@ -17,9 +17,9 @@
 - **三大应用场景**：需求评估（某改动影响哪些模块）、Bug 定位（为什么某功能没出现）、溯源需求并自动执行测试出报告。
 - **对标竞品**：相比 Copilot/Cursor、Sourcegraph、Glean/Rovo、Devin，DM-Seek 专注 Why / Impact / Evidence 的证据闭环。
 
-## Demo / 截图
+## Demo 视频
 
-> 把图片/视频放到本目录（`projects/dm-seek/`）后引用：
-> `![7 Agent 链路](agents.png)` · `<video src="demo.mp4" controls></video>`
+完整演示视频体积较大，未内嵌（产品演示 / QA Demo / 「马冬梅」事件补充材料）。
 
-_（待补充）_
+> 如需在线播放，建议上传到视频平台后用 iframe 嵌入，例如：
+> `<iframe src="https://你的视频地址" height="640"></iframe>`

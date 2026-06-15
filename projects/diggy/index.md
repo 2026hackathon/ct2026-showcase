@@ -22,9 +22,17 @@
 | :--: | :--: | :--: | :--: |
 | 自动化测试用例 | 次提交 | 份报告 | 手写业务代码 |
 
-## Demo / 截图
+## 概览
 
-> 把图片/视频放到本目录（`projects/diggy/`）后引用：
-> `![M1 报告](m1.png)` · `<video src="m1.mp4" controls></video>`
+![产品概览](overview.png)
+![MVP](mvp.png)
 
-_（待补充）_
+## Demo 视频
+
+**M1 · 时间窗报告**
+
+<video src="m1.mp4" controls preload="metadata"></video>
+
+**M2 · 锚点诊断**
+
+<video src="m2.mp4" controls preload="metadata"></video>

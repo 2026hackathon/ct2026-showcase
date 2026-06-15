@@ -13,15 +13,20 @@
 - **校准主流程**：以「金龙阁」真实菜单走通预测 → 校准 → 模拟 → 策略 → 对比的闭环。
 - **双路径**：既有引导式校准流程，也支持上传任意真实菜单做即时 AI 评估报告。
 
-## Demo / 截图
+## Demo 视频
 
-> 把原型截图放到本目录（`projects/menupilot/`）后引用，连续多张会自动排成画廊：
->
-> ```
-> ![导入](01-import.png)
-> ![预测](04-predict.png)
-> ![对比](09-compare.png)
-> ```
-> 视频：`<video src="demo.mp4" controls></video>`
+<video src="demo.mp4" controls preload="metadata"></video>
 
-_（待补充）_
+## 交互原型 · 11 屏
+
+![Hero](01-hero.png)
+![Step 1 · 导入菜单](02-step1-import.png)
+![Step 2 · 设定 persona](03-step2-persona.png)
+![Step 3a · 预测](04-step3a-predict.png)
+![Step 3b · 校准](05-step3b-calibrated.png)
+![Step 4 · 模拟](06-step4-simulate.png)
+![Step 5 · 策略](07-step5-strategy.png)
+![Step 6 · 应用](08-step6-apply.png)
+![Step 7 · 对比](09-step7-compare.png)
+![评估 · 上传](10-eval-upload.png)
+![评估 · 报告](11-eval-report.png)

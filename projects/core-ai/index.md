@@ -18,9 +18,6 @@ Claude Code / Codex 这类个人 code agent 只能帮你「一个人」把代码
 | :--: | :--: | :--: | :--: |
 | 岗位 Agent | 开发团队 | 147 commit | 行代码 |
 
-## Demo / 截图
+## 产品预览
 
-> 把图片放到本目录（`projects/core-ai/`）后引用：`![公司自主运转中](preview.png)`
-> 视频：`<video src="demo.mp4" controls></video>`
-
-_（待补充）_
+![公司自主运转中](preview.png)
