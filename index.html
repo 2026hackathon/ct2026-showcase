@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT 2026 Hackathon · 项目一览</title>
+<style>
+  :root{
+    --bg:#0d1117;
+    --panel:#161b22;
+    --panel-2:#1c232d;
+    --border:#2a313c;
+    --text:#e6edf3;
+    --muted:#9aa7b4;
+    --faint:#6b7785;
+    --accent:#58a6ff;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;height:100vh;overflow:hidden}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:300px;flex-shrink:0;
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    overflow-y:auto;
+  }
+  .brand{padding:22px 22px 14px;border-bottom:1px solid var(--border)}
+  .brand h1{font-size:16px;letter-spacing:.5px;font-weight:700}
+  .brand p{font-size:12px;color:var(--faint);margin-top:4px}
+  .tabs{padding:10px 10px 24px;flex:1}
+  .tab{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;border-radius:10px;cursor:pointer;
+    border:1px solid transparent;transition:background .15s,border-color .15s;
+    user-select:none;
+  }
+  .tab:hover{background:var(--panel-2)}
+  .tab.active{background:var(--panel-2);border-color:var(--border)}
+  .tab .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--clr)}
+  .tab .seq{
+    width:22px;height:22px;flex-shrink:0;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:var(--faint);
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .tab.active .seq{color:var(--clr-bright);border-color:var(--clr)}
+  .tab .medal{font-size:17px;flex-shrink:0;line-height:1}
+  .tab.awarded{border-color:rgba(255,255,255,.06)}
+  .tab .meta{min-width:0}
+  .tab .team{font-size:11px;color:var(--faint);letter-spacing:.4px}
+  .tab .prod{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tab.active .prod{color:var(--clr-bright)}
+
+  /* ---------- Content ---------- */
+  .content{flex:1;overflow-y:auto;position:relative}
+  .panel{display:none;padding:46px 56px 80px;max-width:1000px;margin:0 auto;animation:fade .35s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .hd{border-bottom:1px solid var(--border);padding-bottom:26px;margin-bottom:30px}
+  .hd .hd-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .hd .team-chip{
+    display:inline-block;font-size:12px;letter-spacing:.6px;
+    padding:4px 12px;border-radius:999px;
+    background:var(--clr-soft);color:var(--clr-bright);font-weight:600;
+  }
+  .hd h2{font-size:33px;font-weight:800;letter-spacing:-.5px}
+  .hd .tagline{font-size:16px;color:var(--muted);margin-top:10px;font-weight:500}
+  .hd .members{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+  .hd .members .mb{font-size:12.5px;padding:4px 11px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--muted)}
+  .hd .members .mb.host{background:var(--clr-soft);border-color:var(--clr);color:var(--clr-bright);font-weight:700}
+
+  .award-banner{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:800;letter-spacing:.5px;
+    padding:5px 14px;border-radius:999px;border:1px solid;
+  }
+  .award-banner .ico{font-size:16px}
+  .award-gold{color:#f7d774;border-color:rgba(247,215,116,.5);background:rgba(247,215,116,.12)}
+  .award-silver{color:#cfd8e3;border-color:rgba(207,216,227,.5);background:rgba(207,216,227,.12)}
+  .award-bronze{color:#e0a06a;border-color:rgba(224,160,106,.5);background:rgba(224,160,106,.12)}
+  .award-ai{color:#7ee0c8;border-color:rgba(126,224,200,.5);background:rgba(126,224,200,.12)}
+
+  .section{margin-bottom:30px}
+  .section > .label{
+    display:flex;align-items:center;gap:9px;
+    font-size:12.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+    color:var(--clr-bright);margin-bottom:13px;
+  }
+  .section > .label::before{content:"";width:4px;height:15px;border-radius:2px;background:var(--clr)}
+  .prose{color:var(--text);font-size:15.5px}
+  .prose.muted{color:var(--muted)}
+
+  ul.points{list-style:none;display:grid;gap:11px}
+  ul.points li{
+    position:relative;padding:13px 16px 13px 40px;
+    background:var(--panel);border:1px solid var(--border);border-radius:11px;
+    font-size:14.5px;
+  }
+  ul.points li::before{
+    content:"";position:absolute;left:16px;top:19px;
+    width:8px;height:8px;border-radius:50%;background:var(--clr);
+  }
+  ul.points li b{color:var(--text);font-weight:700}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:11px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:14px 15px}
+  .card .k{font-size:13px;font-weight:700;color:var(--text)}
+  .card .v{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+  .stats{display:flex;flex-wrap:wrap;gap:10px}
+  .stat{
+    background:linear-gradient(135deg,var(--clr-soft),transparent);
+    border:1px solid var(--border);border-radius:11px;padding:13px 18px;min-width:110px;
+  }
+  .stat .num{font-size:22px;font-weight:800;color:var(--clr-bright)}
+  .stat .desc{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-size:12px;padding:5px 11px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--muted)}
+
+  .footer-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border)}
+  .repo{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent);text-decoration:none}
+  .repo:hover{text-decoration:underline}
+  .assets{font-size:12.5px;color:var(--faint)}
+
+  @media (max-width:780px){
+    .app{flex-direction:column;height:auto}
+    .sidebar{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+    .brand{display:none}
+    .tabs{display:flex;gap:8px;padding:12px}
+    .tab{flex-shrink:0}
+    .tab .team{display:none}
+    .content{height:auto}
+    .panel{padding:30px 22px 60px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>CT 2026 Hackathon</h1>
+      <p>参赛项目一览 · 8 支队伍</p>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+const PROJECTS = [
+  {
+    id:"local-agent", team:"都选 C", product:"All-in Local Agent",
+    color:"#58a6ff",
+    order:2, members:["Brooks","May","Penn","Lorna"], presenter:"Brooks",
+    tagline:"用自己的 Agent，Build Anything —— Local-first 的 Agent 运行与接入平台",
+    problem:"用户本机已经装好并登录了 Claude Code、Codex、Gemini CLI、Cursor 等 coding agent，但这些能力彼此分散、无法统一管理，更无法被本机界面或远端（如手机）调用使用。",
+    solution:"把本机已有的 agent、账号和运行环境统一接入一个桌面 Hub，并通过同一套 Gateway API 让本机界面或远端移动应用调用它们。AI 推理与工具执行全部发生在用户自己的电脑上，云端 Relay 只负责连接设备和转发消息，不提供 AI 推理。",
+    points:[
+      "<b>Local-first</b>：复用用户本机已有的 coding agent、账号与运行环境，数据不出本机。",
+      "<b>Multi-agent</b>：统一发现并管理多个 Agent Runtime，通过 Role 组成协作群聊。",
+      "<b>Structured tasks</b>：把 Agent 输出校验为符合 JSON Schema 的结构化结果，不命中就追问重试。",
+      "<b>Remote-ready</b>：移动应用经 Relay 调用本机 Agent，断线重连后还能对账任务结果。",
+      "<b>Protocol boundary</b>：在 daemon 内终结 ACP 与各 adapter 的差异，对客户端提供稳定 Gateway API。",
+    ],
+    modules:[
+      ["Hub","Electron 桌面应用 · Runtime/角色管理、多 Agent 群聊、设备配对"],
+      ["Daemon","进程监管 · Session / StructuredExchange / Task / 权限策略"],
+      ["Protocol","TypeScript 契约包 · Gateway API、Relay 帧、DTO、错误码"],
+      ["SDK","RN 兼容 · 配对、任务提交、进度订阅、重连对账"],
+      ["Relay","Node WebSocket · 连接管理、路由转发、限流"],
+      ["Nutrition App","首个远端场景 · 拍食物拿结构化营养分析"],
+    ],
+    repo:"https://github.com/2026hackathon/all-in-local-agent",
+    assets:"源代码 ✓ · 演示 PPT ✓ · 现场 Demo",
+  },
+  {
+    id:"diggy", team:"打出风采", product:"Diggy 挖挖",
+    color:"#f0883e",
+    order:6, members:["Miller","Simon","Brooker"], presenter:"Simon",
+    award:{rank:"bronze", icon:"🥉", label:"三等奖 · 铜牌"},
+    tagline:"可进化的 DevOps AI Agent —— 把查日志、看指标、定位问题，变成人人可用、随叫随到、结论可验证的服务",
+    problem:"团队不缺数据和查询技巧（ES-Kibana-AKS 等基础设施已很完善），真正缺的是「从数据到结论的自动化路径」：早晨想知道服务稳不稳要手动开 Kibana 写查询；发布前看错误趋势要查多个 index 自己比对；半夜告警人不在电脑前；同事甩来一条错误日志却没法马上分析。",
+    solution:"以 Slack 为统一入口（@Diggy 一句话即可触发），提供两条核心产品链路：M1 时间窗报告——自然语言问时间范围，自动聚合日志生成健康报告；M2 锚点诊断——输入 Kibana 链接或告警 ID，逐轮取证、收敛假设，生成可溯源的诊断报告。",
+    points:[
+      "<b>快 / 准 / 不越位</b>：极大缩短发现问题到拿到结论的时间；结论可追溯可验证；只做分析者与建议者，不替代人的最终决策。",
+      "<b>Runtime Harness</b>：用 Task / Tool / Evidence / Schema+Audit 四道 Gate 硬约束 Agent 行为，全程 audit 留痕。",
+      "<b>LLM 负责理解，代码负责事实</b>：所有数字来自 ES 聚合结果，LLM 不参与计算；报告生成后做实体校验，防编造。",
+      "<b>逐轮取证而非黑盒推理</b>：模型提出假设、选择下一步取证，每轮证据收敛或推翻假设，结论必须被原始日志引用支撑。",
+    ],
+    stats:[["515","自动化测试用例"],["162","次提交"],["61","份报告"],["0","手写业务代码"]],
+    repo:"https://github.com/2026hackathon/diggy",
+    assets:"源代码 ✓ · 演示 PPT ✓ · Demo 视频 (m1/m2)",
+  },
+  {
+    id:"agentboss", team:"乘风破限", product:"Agent Boss",
+    color:"#a371f7",
+    order:1, members:["Felix","Cato","Knight","Bonnie"], presenter:"Felix",
+    tagline:"做 AI 的 Boss，不做 AI 的保姆 —— 量化 · 成长 · 进化",
+    problem:"重度 AI 工具使用者面临「复盘困难」：大量时间、Token、费用像流水般消失却无法定位有效产出；反复沟通纠错的隐形损耗从未被量化；年终总结想写 AI 协作的能力成长，却发现它在传统评价体系里找不到坐标。",
+    solution:"一个本地运行、专注复盘和提升人机协作效能的个人成长引擎。构建自动化优化闭环：数据监测 → 效能诊断 → 自进化 → 能力模型与 AI 环境雷达 → 持续成长。从「凭感觉用 AI」走向「用数据驾驭 AI」。",
+    points:[
+      "<b>协作效能可视化</b>：卡点 / 时间 / Token / 费用全透明，识别无效产出（需求推翻、需求漂移），看清效能分布。",
+      "<b>能力镜像</b>：AI 分析交互内容，生成深层能力雷达图与成长曲线，让 AI 无法替代的能力可量化、可追溯。",
+      "<b>AI 诊断</b>：评估知识储备、工具调用与输出质量，精准定位短板并给出可执行优化路径。",
+      "<b>自进化引擎</b>：检测瓶颈（如缺项目背景导致需求澄清过长），自动生成优化建议并一键应用为系统指令。",
+    ],
+    diff:["不做聊天框，做协作教练","不止统计，更驱动成长","本地优先，数据可控"],
+    repo:"https://github.com/2026hackathon/AgentBoss",
+    assets:"演示 PPT ✓",
+  },
+  {
+    id:"next", team:"问题不大", product:"Next",
+    color:"#3fb950",
+    order:5, members:["Manz","Murphy","Henry"], presenter:"Henry",
+    tagline:"你的下一件事 —— 住在灵动岛的 AI 任务管家",
+    problem:"待办事项散落在 N 个工具里（聊天 / 邮件 / Jira / 日历 / GitHub / 终端），还要盯着 Agent。录入门槛高，大部分事在「想记」和「真记」之间被忘掉；时间到了才提醒已经来不及；早上要开一堆窗口才知道今天干嘛。",
+    solution:"把一直空着的刘海变成第二块屏——一个永远在线的 AI 助手：收缩态只占两翼不挡内容，悬停展开。记录 → 追踪 → 提醒 → 复盘 全在这一小块闭环。按「你和它的关系」把一天要操心的事重新归为五类、零重叠：Todo / WorkItem / Calendar / Message / Agent。",
+    points:[
+      "<b>截图秒变待办</b>：F2 截图 → AI 视觉解析 → 3 秒生成结构化待办，自动判断优先级、建议截止、挂原图。",
+      "<b>一屏管全部工作流</b>：Today 给建议工作顺序、Work 汇 Jira+PR、Calendar 并一条时间线、Inbox 邮件收成一句话。",
+      "<b>Agent 会话监控</b>：把 agent 运行状态搬上刘海，运行中→待确认→完成弹卡，可跳回 Terminal / iTerm / tmux。",
+      "<b>AI 晨晚报</b>：早报排今天工作顺序避开会议，晚报复盘今天并预警明天高优。",
+      "<b>MCP 扩展</b>：下一步开放 MCP server，让任何 agent / 脚本 / CI 都能往 Next 写提醒，成为统一提醒出口。",
+    ],
+    repo:"待填写",
+    assets:"3 人小队 · 48 小时 · spec-driven vibecoding (Swift)",
+  },
+  {
+    id:"menupilot", team:"爱吃香菜", product:"MenuPilot",
+    color:"#e3b341",
+    order:8, members:["Kent","Lim"], presenter:"Lim",
+    award:{rank:"silver", icon:"🥈", label:"二等奖 · 银牌"},
+    tagline:"把菜单变成一场可解释、可回退的增长实验 —— Menu Growth Simulator",
+    problem:"餐厅调整菜单（定价、结构、菜品描述）对营收的影响往往靠拍脑袋决定，缺少一个能事先预测、能解释为什么、又能随时回退的实验工具。",
+    solution:"一个菜单增长模拟器。完整主流程：导入菜单 → 设定顾客 persona → 预测并校准 → 模拟改动 → 生成增长策略 → 应用并对比 → 产出评估报告。同时提供「上传任意真实菜单」的 AI 评估第二路径。前端 Demo 本身即原型，11 屏端到端走通。",
+    points:[
+      "<b>可解释</b>：每一次预测与策略都给出依据，而非黑盒给数字。",
+      "<b>可回退</b>：把菜单改动当作一次次实验，应用后可对比、可撤销。",
+      "<b>校准主流程</b>：以「金龙阁」真实菜单走通预测→校准→模拟→策略→对比的闭环。",
+      "<b>双路径</b>：既有引导式校准流程，也支持上传任意真实菜单做即时 AI 评估报告。",
+    ],
+    repo:"https://github.com/2026hackathon/menupilot",
+    assets:"交互原型册 (PDF/HTML, 11 屏) · 演示 PPT · Demo 视频",
+  },
+  {
+    id:"drape", team:"干饭搭子", product:"Drape",
+    color:"#ec6cb9",
+    order:4, members:["Jenny","Jay","Even","Peyton"], presenter:"Jenny",
+    award:{rank:"ai", icon:"🤖", label:"AI 驾驭奖"},
+    tagline:"AI 穿搭助手 —— 不追潮流 · 不必买新 · 穿好你已有的",
+    problem:"衣橱很满却经常忘记自己有什么；买了新衣不知道跟旧的怎么搭；纠结半天最后还是穿回同一套；看到喜欢的不知道自己的上身效果。「衣食住行」里，Drape 解决「穿」。",
+    solution:"用 AI 帮你重新发现衣橱里的衣服——虚拟试穿看效果、智能搭配找灵感。核心理念是「衣橱优先」：当你上传一件新衣，Drape 不会立刻劝你买，而是先翻你的衣橱找能搭的相似款；找不到，才带你去社区看灵感。结果是更少冲动消费、更高衣橱利用率。",
+    points:[
+      "<b>数字化衣橱</b>：拍照 / 上传，AI 分析成商品化单品，让被遗忘的衣服重见天日。",
+      "<b>AI 形象</b>：录入 body profile（照片+身高体重），生成你的虚拟形象用于试穿。",
+      "<b>试穿即一等公民</b>：生成 → 审查 → 细化。因为整图重绘会漂移人脸身份与身材比例，每次生成都附一份可检视的评审结果。",
+      "<b>搭配与发现</b>：按 Work/Casual/Evening 等场合生成多套搭配；社区灵感作为购买参考。",
+    ],
+    stack:["Next.js 15 + React 19","OpenAI Agents SDK","Azure OpenAI","Prisma + SQLite","编排是确定性代码，不是 agent"],
+    repo:"私有 PoC · Web 端竖屏体验",
+    assets:"PoC 源码 · 演示 PPT (Drape_Deck) · FigJam 设计稿",
+  },
+  {
+    id:"core-ai", team:"Core-AI Team", product:"Core-AI Team",
+    color:"#f85149",
+    order:3, members:["Xander","Cyril","Stephen","Richard"], presenter:"Xander",
+    award:{rank:"gold", icon:"🥇", label:"一等奖 · 金牌"},
+    tagline:"从 Copilot 到 Company —— 纯 Agent 驱动的 AI 虚拟项目公司",
+    problem:"Claude Code / Codex 这类个人 code agent 只能帮你「一个人」把代码写得更快，无法替你把从需求到产品、到 QA 验收的「整个活」干完。",
+    solution:"你以「客户」身份把一句需求告诉前台需求顾问（AE），公司里 CEO、产品、项目经理、技术负责人、工程师、设计师、测试、AE 共 8 个岗位 Agent 像真实公司一样自主讨论、开会、产生分歧、拍板决策、动手产出，最终交付从 PRD、技术方案到真实可运行代码仓库的完整成果。",
+    points:[
+      "<b>人是客户/观察者，不是操作员</b>：交一个目标即可，并能在地图、动态流、共享白板上实时观测组织怎么协作。",
+      "<b>没有写死的剧本</b>：何时开会、找谁聊、何时产出都由 Agent 每一拍自主判断涌现；客户随时插话会在组织内自然传播。",
+      "<b>会交付的公司</b>：QA Agent 对照需求逐项验收，不达标回流重做，而非聊得热闹的群聊。",
+    ],
+    stats:[["8","岗位 Agent"],["4 人+CC","开发团队"],["1.5 天","147 commit"],["~1.1 万","行代码"]],
+    repo:"https://github.com/2026hackathon/Core-AI-Team",
+    assets:"源代码 ✓ · 演示 PPT ✓ · 现场真跑",
+  },
+  {
+    id:"dmseek", team:"Team Aback", product:"DM-Seek",
+    color:"#39c5cf",
+    order:7, members:["Dylan","Jason","Mantee"], presenter:"Dylan",
+    tagline:"软件研发的「理解 × 追溯 × 验证」基础设施",
+    problem:"软件开发界的「马冬梅」事件：① 知识失忆——代码告诉你做了什么却不告诉你为什么，历史决策随同事离职丢失；② 影响未知——一个小改动可能牵动多服务，评估高度依赖个人经验；③ 信息源割裂——代码、Git、Jira、Confluence、PR、文档分散在不同系统，查问题像拼碎片。",
+    solution:"从用户一句自然语言问题出发，7 个 Agent 协作完成：定位代码、追溯历史、还原需求、校验证据。以代码为唯一事实基准，Code + Git + Jira 三元闭环形成高置信度结论，输出带出处、带置信度的答案。补上现有工具缺失的「系统理解层」。",
+    points:[
+      "<b>7 Agent 链路</b>：Dongmei-MA 协调调度 → KB Keeper / Code Analyst / Repo Tracer / Jira Tracer 并行取证 → Synthesizer 综合 → Evidence Verifier 校验。",
+      "<b>Evidence First</b>：每条结论都带出处和置信度，证据不足自动返工，最多 2 轮后降级交付。",
+      "<b>三大应用场景</b>：需求评估（某改动影响哪些模块）、Bug 定位（为什么某功能没出现）、溯源需求并自动执行测试出报告。",
+      "<b>对标竞品</b>：相比 Copilot/Cursor、Sourcegraph、Glean/Rovo、Devin，DM-Seek 专注 Why / Impact / Evidence 的证据闭环。",
+    ],
+    repo:"https://github.com/2026hackathon/dm-seek",
+    assets:"源代码 ✓ · 演示 PPT · Demo / QA 视频",
+  },
+];
+
+function shade(hex,a){const n=parseInt(hex.slice(1),16);const r=n>>16,g=n>>8&255,b=n&255;return `rgba(${r},${g},${b},${a})`}
+
+const tabsEl=document.getElementById("tabs");
+const contentEl=document.getElementById("content");
+
+PROJECTS.sort((a,b)=>a.order-b.order);
+
+PROJECTS.forEach((p,i)=>{
+  const t=document.createElement("div");
+  t.className="tab"+(i===0?" active":"")+(p.award?" awarded":"");
+  t.dataset.id=p.id;
+  t.style.setProperty("--clr",p.color);
+  t.style.setProperty("--clr-bright",p.color);
+  const medal=p.award?`<span class="medal">${p.award.icon}</span>`:`<span class="dot"></span>`;
+  t.innerHTML=`<span class="seq">${p.order}</span>${medal}<div class="meta"><div class="team">${p.team} · 路演 ${p.presenter}</div><div class="prod">${p.product}</div></div>`;
+  t.onclick=()=>select(p.id);
+  tabsEl.appendChild(t);
+
+  const panel=document.createElement("section");
+  panel.className="panel"+(i===0?" active":"");
+  panel.id="panel-"+p.id;
+  panel.style.setProperty("--clr",p.color);
+  panel.style.setProperty("--clr-bright",p.color);
+  panel.style.setProperty("--clr-soft",shade(p.color,.16));
+
+  const awardBanner=p.award?`<div class="award-banner award-${p.award.rank}"><span class="ico">${p.award.icon}</span>${p.award.label}</div>`:"";
+  const memberHtml=p.members.map(m=>`<span class="mb${m===p.presenter?" host":""}">${m}${m===p.presenter?" · 路演":""}</span>`).join("");
+
+  let html=`
+    <div class="hd">
+      <div class="hd-top"><span class="team-chip">第 ${p.order} 个路演 · ${p.team}</span>${awardBanner}</div>
+      <h2>${p.product}</h2>
+      <div class="tagline">${p.tagline}</div>
+      <div class="members">${memberHtml}</div>
+    </div>
+    <div class="section">
+      <div class="label">解决什么问题</div>
+      <div class="prose muted">${p.problem}</div>
+    </div>
+    <div class="section">
+      <div class="label">怎么解决</div>
+      <div class="prose">${p.solution}</div>
+    </div>
+    <div class="section">
+      <div class="label">关键亮点</div>
+      <ul class="points">${p.points.map(x=>`<li>${x}</li>`).join("")}</ul>
+    </div>`;
+
+  if(p.modules){
+    html+=`<div class="section"><div class="label">产品组成</div><div class="grid">${p.modules.map(m=>`<div class="card"><div class="k">${m[0]}</div><div class="v">${m[1]}</div></div>`).join("")}</div></div>`;
+  }
+  if(p.stats){
+    html+=`<div class="section"><div class="label">硬核成果</div><div class="stats">${p.stats.map(s=>`<div class="stat"><div class="num">${s[0]}</div><div class="desc">${s[1]}</div></div>`).join("")}</div></div>`;
+  }
+  if(p.diff){
+    html+=`<div class="section"><div class="label">差异化优势</div><div class="tags">${p.diff.map(d=>`<span class="tag">${d}</span>`).join("")}</div></div>`;
+  }
+  if(p.stack){
+    html+=`<div class="section"><div class="label">技术栈</div><div class="tags">${p.stack.map(d=>`<span class="tag">${d}</span>`).join("")}</div></div>`;
+  }
+
+  const repoHtml = p.repo && p.repo.startsWith("http")
+    ? `<a class="repo" href="${p.repo}" target="_blank">↗ ${p.repo.replace("https://","")}</a>`
+    : `<span class="assets">代码仓库：${p.repo}</span>`;
+  html+=`<div class="footer-row">${repoHtml}<span class="assets">${p.assets}</span></div>`;
+
+  panel.innerHTML=html;
+  contentEl.appendChild(panel);
+});
+
+function select(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.id===id));
+  document.querySelectorAll(".panel").forEach(pn=>pn.classList.toggle("active",pn.id==="panel-"+id));
+  contentEl.scrollTop=0;
+}
+</script>
+</body>
+</html>
