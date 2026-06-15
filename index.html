@@ -6,55 +6,168 @@
 <title>CT 2026 Hackathon · 项目一览</title>
 <style>
   :root{
-    --bg:#0d1117; --panel:#161b22; --panel-2:#1c232d; --border:#2a313c;
-    --text:#e6edf3; --muted:#9aa7b4; --faint:#6b7785; --accent:#58a6ff;
+    --bg:#0b0e13; --panel:#161b22; --panel-2:#1c232d; --border:#2a313c;
+    --text:#e6edf3; --muted:#9aa7b4; --faint:#6b7785;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;
-    min-height:100vh;
+    background:radial-gradient(1200px 600px at 50% -10%, #11161d 0%, var(--bg) 60%);
+    color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;
   }
-  .wrap{max-width:1080px;margin:0 auto;padding:60px 28px 90px}
-  header.hero{margin-bottom:40px}
-  header.hero h1{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .wrap{max-width:1120px;margin:0 auto;padding:64px 28px 100px}
+  header.hero{margin-bottom:42px}
+  header.hero h1{font-size:31px;font-weight:800;letter-spacing:-.5px}
   header.hero p{color:var(--faint);margin-top:8px;font-size:14px}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-  a.card{
-    display:block;text-decoration:none;color:inherit;
-    background:var(--panel);border:1px solid var(--border);border-radius:16px;
-    padding:22px 22px 20px;position:relative;overflow:hidden;
-    transition:transform .15s,border-color .15s,background .15s;
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px;
+    perspective:1400px;
   }
-  a.card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--clr)}
-  a.card:hover{transform:translateY(-3px);border-color:var(--clr);background:var(--panel-2)}
-  .card .row1{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-  .card .seq{
-    width:24px;height:24px;flex-shrink:0;border-radius:7px;
+
+  /* ---------- base card ---------- */
+  a.card{
+    --edge:var(--clr);
+    position:relative;display:block;text-decoration:none;color:inherit;
+    background:linear-gradient(180deg,#171c24 0%,#10141a 100%);
+    border:1px solid var(--border);border-radius:18px;
+    padding:24px 24px 20px;overflow:hidden;isolation:isolate;
+    transform-style:preserve-3d;
+    transform:perspective(1400px) rotateX(0) rotateY(0);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 1px 2px rgba(0,0,0,.5), 0 8px 22px rgba(0,0,0,.4);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .3s ease;
+    will-change:transform;
+  }
+  a.card.is-tilting{transition:transform .08s linear, box-shadow .4s ease}
+  a.card>*{position:relative;z-index:1;transform:translateZ(0);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+
+  /* left accent bar (team color) */
+  a.card .bar{position:absolute;inset:0 auto 0 0;width:4px;background:var(--clr);z-index:2;opacity:.85}
+
+  .row1{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .seq{
+    width:25px;height:25px;flex-shrink:0;border-radius:7px;
     display:flex;align-items:center;justify-content:center;
     font-size:12px;font-weight:700;color:var(--clr);
-    background:var(--bg);border:1px solid var(--clr);
+    background:rgba(255,255,255,.03);border:1px solid var(--edge);
   }
-  .card .medal{font-size:18px;line-height:1}
-  .card .team{font-size:11.5px;color:var(--faint);letter-spacing:.4px}
-  .card h2{font-size:20px;font-weight:800;color:var(--clr);margin:2px 0 8px}
-  .card .tag{font-size:13.5px;color:var(--muted);min-height:38px}
-  .card .ft{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
-  .card .ft .who{font-size:12px;color:var(--faint)}
-  .card .ft .who b{color:var(--clr)}
-  .card .ft .go{font-size:13px;color:var(--clr);font-weight:600}
-
-  .award-banner{
-    display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;
-    padding:3px 10px;border-radius:999px;border:1px solid;margin-left:auto;
+  .medal{font-size:19px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+  .team{font-size:11.5px;color:var(--faint);letter-spacing:.4px}
+  .award-pill{
+    margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.3px;
+    padding:3px 11px;border-radius:999px;border:1px solid var(--edge);
+    color:var(--edge);background:rgba(255,255,255,.03);
   }
-  .award-gold{color:#f7d774;border-color:rgba(247,215,116,.5);background:rgba(247,215,116,.12)}
-  .award-silver{color:#cfd8e3;border-color:rgba(207,216,227,.5);background:rgba(207,216,227,.12)}
-  .award-bronze{color:#e0a06a;border-color:rgba(224,160,106,.5);background:rgba(224,160,106,.12)}
-  .award-ai{color:#7ee0c8;border-color:rgba(126,224,200,.5);background:rgba(126,224,200,.12)}
+  .card h2{font-size:21px;font-weight:800;margin:4px 0 9px;letter-spacing:-.2px;color:var(--text)}
+  .tag{font-size:13.5px;color:var(--muted);min-height:40px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ft{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+  .ft .who{font-size:12px;color:var(--faint)}
+  .ft .who b{color:var(--clr)}
+  .ft .go{font-size:13px;color:var(--clr);font-weight:700}
 
-  footer{margin-top:48px;color:var(--faint);font-size:12.5px;text-align:center}
+  /* ---------- specular band, angle tracks the 3D tilt (winners only) ---------- */
+  a.card.is-award::before{
+    content:"";position:absolute;inset:-40%;border-radius:inherit;z-index:0;pointer-events:none;
+    background:linear-gradient(var(--shine-angle,115deg),
+      transparent 41%,
+      var(--shine) 47%,
+      var(--sheen) 50%,
+      var(--shine) 53%,
+      transparent 59%);
+    background-size:240% 240%;
+    background-position:var(--mx,50%) var(--my,50%);
+    opacity:0;transition:opacity .4s ease;mix-blend-mode:screen;
+  }
+  a.card.is-award:hover::before{opacity:1}
+
+  /* top sheen line (winners only) */
+  a.card.is-award::after{
+    content:"";position:absolute;top:0;left:16%;right:16%;height:1px;z-index:3;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--sheen) 50%,transparent);
+    opacity:0;transition:opacity .45s ease;
+  }
+  a.card.is-award:hover::after{opacity:1}
+
+  /* hover lift / depth */
+  a.card:hover{border-color:var(--edge)}
+  a.card.is-award:hover{
+    box-shadow:inset 0 1px 0 var(--inner-hi),
+      0 26px 64px rgba(0,0,0,.6), 0 10px 26px rgba(0,0,0,.45),
+      0 0 60px var(--glow);
+  }
+  a.card.plain:hover{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 18px 40px rgba(0,0,0,.5), 0 8px 20px rgba(0,0,0,.4);
+  }
+  a.card:hover .row1{transform:translateZ(34px)}
+  a.card:hover h2{transform:translateZ(22px)}
+  a.card:hover .tag{transform:translateZ(14px)}
+  a.card:hover .ft{transform:translateZ(10px)}
+
+  /* metallic gradient title on hover (winners) */
+  a.card.is-award:hover h2{
+    background:var(--title-grad);background-size:200% auto;
+    background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  }
+
+  /* ===== Gold · 黑金 ===== */
+  .award-gold{
+    --clr:#e8c074; --edge:#d4af37;
+    --shine:rgba(232,192,116,.42); --shine-mid:rgba(212,175,55,.12);
+    --glow:rgba(212,175,55,.34); --sheen:rgba(245,217,138,.75);
+    --inner-hi:rgba(232,192,116,.45);
+    --title-grad:linear-gradient(95deg,#e8c074,#fff0c2 35%,#b8941f 65%,#f5d98a);
+    background:linear-gradient(180deg,#1c170d 0%,#0b0805 100%);
+  }
+  /* ===== Silver · 银光 ===== */
+  .award-silver{
+    --clr:#d6dde6; --edge:#aab4c2;
+    --shine:rgba(230,236,244,.5); --shine-mid:rgba(190,200,214,.14);
+    --glow:rgba(190,200,214,.3); --sheen:rgba(255,255,255,.85);
+    --inner-hi:rgba(230,236,244,.5);
+    --title-grad:linear-gradient(95deg,#cfd8e3,#ffffff 40%,#9aa3b0 65%,#e8edf2);
+    background:linear-gradient(180deg,#171a20 0%,#0b0d11 100%);
+  }
+  /* ===== Bronze · 铜光 ===== */
+  .award-bronze{
+    --clr:#e0a06a; --edge:#cd7f32;
+    --shine:rgba(230,168,106,.42); --shine-mid:rgba(205,127,50,.13);
+    --glow:rgba(205,127,50,.32); --sheen:rgba(240,196,154,.78);
+    --inner-hi:rgba(230,168,106,.45);
+    --title-grad:linear-gradient(95deg,#e6a86a,#f3cda0 38%,#9c5a22 66%,#cd7f32);
+    background:linear-gradient(180deg,#1b140d 0%,#0b0806 100%);
+  }
+  /* ===== AI 驾驭奖 · 金属虹彩光泽 ===== */
+  .award-ai{
+    --clr:#9fe6da; --edge:#7ee0c8;
+    --shine:rgba(180,235,224,.45); --shine-mid:rgba(180,200,255,.16);
+    --glow:rgba(126,224,200,.3); --sheen:rgba(220,240,255,.85);
+    --inner-hi:rgba(180,235,224,.5);
+    --title-grad:linear-gradient(95deg,#b8f0e6,#cfd0ff 30%,#f5c8e8 55%,#b8f0e6 80%);
+    background:linear-gradient(180deg,#10171c 0%,#090d11 100%);
+  }
+  /* metallic iridescent sweep for AI card */
+  a.card.award-ai:hover h2{animation:ai-sheen 2.4s linear infinite}
+  @keyframes ai-sheen{to{background-position:200% center}}
+  a.card.award-ai:hover{
+    box-shadow:inset 0 1px 0 var(--inner-hi),
+      0 26px 64px rgba(0,0,0,.6), 0 10px 26px rgba(0,0,0,.45),
+      0 0 50px rgba(126,224,200,.28), 0 0 90px rgba(150,170,255,.16);
+  }
+
+  footer{margin-top:52px;color:var(--faint);font-size:12.5px;text-align:center}
+
+  @media (prefers-reduced-motion:reduce){
+    a.card,a.card.is-tilting{transition:box-shadow .3s ease,border-color .3s ease}
+    a.card.is-tilting{transform:none!important}
+    a.card:hover .row1,a.card:hover h2,a.card:hover .tag,a.card:hover .ft{transform:none}
+    a.card.award-ai:hover h2{animation:none}
+  }
+  @media (max-width:575.98px){
+    .wrap{padding:40px 20px 70px}
+    a.card{padding:20px 20px 18px}
+    .card h2{font-size:19px}
+  }
 </style>
 </head>
 <body>
@@ -71,16 +184,18 @@
 <script>
   const TEAMS=(window.TEAMS||[]).slice().sort((a,b)=>(a.order||999)-(b.order||999));
   const grid=document.getElementById("grid");
+
   TEAMS.forEach(t=>{
     const a=document.createElement("a");
-    a.className="card";
+    a.className="card "+(t.award?("is-award award-"+t.award.rank):"plain");
     a.href="team.html?p="+encodeURIComponent(t.id);
     a.style.setProperty("--clr",t.color);
     const medal=t.award?`<span class="medal">${t.award.icon}</span>`:"";
-    const award=t.award?`<span class="award-banner award-${t.award.rank}">${t.award.label}</span>`:"";
+    const pill=t.award?`<span class="award-pill">${t.award.label}</span>`:"";
     a.innerHTML=`
+      <span class="bar"></span>
       <div class="row1"><span class="seq">${t.order}</span>${medal}
-        <span class="team">${t.team}</span>${award}</div>
+        <span class="team">${t.team}</span>${pill}</div>
       <h2>${t.product}</h2>
       <div class="tag">${t.tagline}</div>
       <div class="ft">
@@ -90,6 +205,38 @@
     grid.appendChild(a);
   });
   if(TEAMS.length===0){grid.innerHTML='<p style="color:var(--faint)">没有读到 projects/manifest.js</p>';}
+
+  /* ---------- 3D tilt + mouse shine ---------- */
+  (function(){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(window.matchMedia('(hover: none)').matches) return;
+    const MAX=7, SCALE=1.015;
+    document.querySelectorAll('#grid .card').forEach(card=>{
+      let raf=null;
+      card.addEventListener('mouseenter',()=>card.classList.add('is-tilting'));
+      card.addEventListener('mousemove',e=>{
+        if(raf)cancelAnimationFrame(raf);
+        raf=requestAnimationFrame(()=>{
+          const r=card.getBoundingClientRect();
+          const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+          const ry=(px-.5)*MAX*2, rx=(.5-py)*MAX*2;
+          card.style.transform=`perspective(1400px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${SCALE})`;
+          // band sweeps with the cursor; its angle rotates with the tilt → looks like a metal reflection
+          card.style.setProperty('--mx',(px*100)+'%');
+          card.style.setProperty('--my',(py*100)+'%');
+          card.style.setProperty('--shine-angle',(115 + ry*3.2 - rx*1.4)+'deg');
+        });
+      });
+      card.addEventListener('mouseleave',()=>{
+        if(raf)cancelAnimationFrame(raf);
+        card.classList.remove('is-tilting');
+        card.style.transform='';
+        card.style.removeProperty('--mx');
+        card.style.removeProperty('--my');
+        card.style.removeProperty('--shine-angle');
+      });
+    });
+  })();
 </script>
 </body>
 </html>
