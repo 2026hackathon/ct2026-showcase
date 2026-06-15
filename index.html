@@ -66,12 +66,18 @@
   .ft .who b{color:var(--clr)}
   .ft .go{font-size:13px;color:var(--clr);font-weight:700}
 
-  /* ---------- mouse-following shine (winners only) ---------- */
+  /* ---------- specular band, angle tracks the 3D tilt (winners only) ---------- */
   a.card.is-award::before{
-    content:"";position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
-    background:radial-gradient(440px circle at var(--mx,50%) var(--my,50%),
-      var(--shine) 0%, var(--shine-mid) 32%, transparent 62%);
-    opacity:0;transition:opacity .35s ease;mix-blend-mode:screen;
+    content:"";position:absolute;inset:-40%;border-radius:inherit;z-index:0;pointer-events:none;
+    background:linear-gradient(var(--shine-angle,115deg),
+      transparent 41%,
+      var(--shine) 47%,
+      var(--sheen) 50%,
+      var(--shine) 53%,
+      transparent 59%);
+    background-size:240% 240%;
+    background-position:var(--mx,50%) var(--my,50%);
+    opacity:0;transition:opacity .4s ease;mix-blend-mode:screen;
   }
   a.card.is-award:hover::before{opacity:1}
 
@@ -215,8 +221,10 @@
           const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
           const ry=(px-.5)*MAX*2, rx=(.5-py)*MAX*2;
           card.style.transform=`perspective(1400px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${SCALE})`;
+          // band sweeps with the cursor; its angle rotates with the tilt → looks like a metal reflection
           card.style.setProperty('--mx',(px*100)+'%');
           card.style.setProperty('--my',(py*100)+'%');
+          card.style.setProperty('--shine-angle',(115 + ry*3.2 - rx*1.4)+'deg');
         });
       });
       card.addEventListener('mouseleave',()=>{
@@ -225,6 +233,7 @@
         card.style.transform='';
         card.style.removeProperty('--mx');
         card.style.removeProperty('--my');
+        card.style.removeProperty('--shine-angle');
       });
     });
   })();
