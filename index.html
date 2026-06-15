@@ -9,6 +9,11 @@
     --bg:#0b0e13; --panel:#161b22; --panel-2:#1c232d; --border:#2a313c;
     --text:#e6edf3; --muted:#9aa7b4; --faint:#6b7785;
   }
+  /* registered so the band's position/angle can ease smoothly (no snap on mouse-out) */
+  @property --mx{syntax:'<percentage>';inherits:true;initial-value:50%}
+  @property --my{syntax:'<percentage>';inherits:true;initial-value:50%}
+  @property --shine-angle{syntax:'<angle>';inherits:true;initial-value:115deg}
+
   *{box-sizing:border-box;margin:0;padding:0}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",Helvetica,Arial,sans-serif;
@@ -35,9 +40,11 @@
     transform-style:preserve-3d;
     transform:perspective(1400px) rotateX(0) rotateY(0);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 1px 2px rgba(0,0,0,.5), 0 8px 22px rgba(0,0,0,.4);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .3s ease;
+    transition:transform .55s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .3s ease,
+      --mx .55s cubic-bezier(.2,.8,.2,1), --my .55s cubic-bezier(.2,.8,.2,1), --shine-angle .55s cubic-bezier(.2,.8,.2,1);
     will-change:transform;
   }
+  /* while actively hovering, the band tracks the cursor instantly (no easing lag) */
   a.card.is-tilting{transition:transform .08s linear, box-shadow .4s ease}
   a.card>*{position:relative;z-index:1;transform:translateZ(0);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 
@@ -221,19 +228,22 @@
           const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
           const ry=(px-.5)*MAX*2, rx=(.5-py)*MAX*2;
           card.style.transform=`perspective(1400px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${SCALE})`;
-          // band sweeps with the cursor; its angle rotates with the tilt → looks like a metal reflection
-          card.style.setProperty('--mx',(px*100)+'%');
-          card.style.setProperty('--my',(py*100)+'%');
-          card.style.setProperty('--shine-angle',(115 + ry*3.2 - rx*1.4)+'deg');
+          // Fixed light source: the specular band is the reflection for THIS tilt angle.
+          // Both its position and orientation are derived from the tilt (not the raw cursor),
+          // so it reads like light glinting off a tilting metal surface.
+          card.style.setProperty('--mx',(50 + ry*5.0)+'%');
+          card.style.setProperty('--my',(50 + rx*5.0)+'%');
+          card.style.setProperty('--shine-angle',(115 + ry*4.0 - rx*2.0)+'deg');
         });
       });
       card.addEventListener('mouseleave',()=>{
         if(raf)cancelAnimationFrame(raf);
-        card.classList.remove('is-tilting');
+        card.classList.remove('is-tilting');   // re-enable easing
         card.style.transform='';
-        card.style.removeProperty('--mx');
-        card.style.removeProperty('--my');
-        card.style.removeProperty('--shine-angle');
+        // ease the band back to rest (don't clear → no snap/flash). opacity also fades out.
+        card.style.setProperty('--mx','50%');
+        card.style.setProperty('--my','50%');
+        card.style.setProperty('--shine-angle','115deg');
       });
     });
   })();
