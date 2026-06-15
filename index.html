@@ -130,6 +130,11 @@
   .tags{display:flex;flex-wrap:wrap;gap:8px}
   .tag{font-size:12px;padding:5px 11px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border);color:var(--muted)}
 
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .shot{overflow:hidden;background:var(--panel);border:1px solid var(--border);border-radius:11px}
+  .shot img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:var(--bg)}
+  .shot .cap{padding:10px 12px;font-size:12.5px;font-weight:700;color:var(--text)}
+
   .footer-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-top:34px;padding-top:22px;border-top:1px solid var(--border)}
   .repo{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent);text-decoration:none}
   .repo:hover{text-decoration:underline}
@@ -229,6 +234,9 @@ PROJECTS.forEach((p,i)=>{
       <ul class="points">${(p.points||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
     </div>`;
 
+  if(p.gallery){
+    html+=`<div class="section"><div class="label">产品截图</div><div class="gallery">${p.gallery.map(g=>`<figure class="shot"><img src="${g[1]}" alt="${p.product} · ${g[0]}" loading="lazy"><figcaption class="cap">${g[0]}</figcaption></figure>`).join("")}</div></div>`;
+  }
   if(p.modules){
     html+=`<div class="section"><div class="label">产品组成</div><div class="grid">${p.modules.map(m=>`<div class="card"><div class="k">${m[0]}</div><div class="v">${m[1]}</div></div>`).join("")}</div></div>`;
   }
