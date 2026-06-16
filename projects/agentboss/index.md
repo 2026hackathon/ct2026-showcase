@@ -1,3 +1,9 @@
+## 项目简介
+
+`agentboss` 是一个**本地优先**的命令行工具（CLI: `aboss`），把 OpenCode / Claude Code 的会话数据 ETL 进本地 SQLite，提供一个 Web Dashboard，帮你回顾 AI agent 的工作表现：在哪些事上做得好、哪些事上踩了坑、时间花在了哪、应该怎么改进 prompt 和工作流。
+
+所有数据都在本地（`~/.agent-boss/boss.db`），不上传任何东西。
+
 ## 解决什么问题
 
 重度 AI 工具使用者面临「复盘困难」：大量时间、Token、费用像流水般消失却无法定位有效产出；反复沟通纠错的隐形损耗从未被量化；年终总结想写 AI 协作的能力成长，却发现它在传统评价体系里找不到坐标。
@@ -19,13 +25,31 @@
 - 不止统计，更驱动成长
 - 本地优先，数据可控
 
+## 安装
+
+```bash
+npm install -g agentboss
+```
+
+需要 Node.js >= 18。
+
+## 使用
+
+```bash
+aboss              # 启动服务并自动打开浏览器（默认 http://localhost:3141）
+aboss -p 4000      # 指定端口
+aboss --no-open    # 启动但不自动打开浏览器
+```
+
+首次启动时会自动扫描本地 OpenCode / Claude Code 的会话数据库，做一次同步，然后在后台跑分析任务。
+
+## 依赖
+
+- 至少安装了 [OpenCode](https://opencode.ai) 或 [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) 中的一个，并产生过会话数据
+- 分析功能会调用你本地的 `opencode` 或 `claude` 命令作为 LLM judge（不需要额外配置 API key）
+
 ## Demo / 截图
 
-> 把图片文件放到本目录（`projects/agentboss/`），然后用下面的写法引用即可。
->
-> 单张图：`![效能看板](dashboard.png)`
-> 连续多张会自动排成画廊。
-> 视频：`<video src="demo.mp4" controls></video>`
-> 在线 Demo：`<iframe src="https://你的demo地址" height="600"></iframe>`
-
-_（待补充）_
+![首页](imgs/homepage.png)
+![效能指标](imgs/metric.png)
+![优化建议](imgs/advice.png)
