@@ -9,9 +9,17 @@ lib/marked.min.js       # Markdown 解析器（本地自带）
 projects/
   manifest.js           # 队伍清单（卡片元信息：名字/排序/奖项/路演人…）
   <你的队>/
-    index.md            # ★ 你的页面正文，自由写 Markdown
-    *.png / *.mp4 ...   # ★ 你的图片、视频，直接丢这个目录
+    index.md            # ★ 你的页面正文（中文），自由写 Markdown
+    index.en.md         # ★ 英文版正文（可选，缺省时英文页会回退到 index.md）
+    *.png / *.mp4 ...   # ★ 你的图片、视频，直接丢这个目录（中英文共用）
 ```
+
+## 中英双语（i18n）
+
+站点支持中 / 英切换：每个页面右上角有 `中 / EN` 切换按钮，选择会记住并随页面跳转保持一致（通过 `?lang=` 参数 + localStorage）。
+
+- **卡片文案**：在 `manifest.js` 里给你那条加 `_en` 字段即可：`team_en` / `product_en` / `tagline_en`，奖项加 `award.label_en`。缺省时英文页自动回退到中文字段。
+- **页面正文**：在自己目录加 `index.en.md`（图片用同样的相对路径，和中文版共用，无需复制）。没有 `index.en.md` 时，英文页会自动回退渲染 `index.md`。
 
 ## 你要改的只有两个地方
 

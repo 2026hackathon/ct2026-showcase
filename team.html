@@ -63,11 +63,25 @@
 
   .err{color:var(--faint);padding:40px 0}
   .err code{background:var(--panel-2);padding:2px 7px;border-radius:5px}
+
+  /* ---------- language switch ---------- */
+  .lang{position:fixed;top:18px;right:18px;z-index:50;display:flex;gap:2px;
+    background:rgba(22,27,34,.82);backdrop-filter:blur(8px);
+    border:1px solid var(--border);border-radius:999px;padding:3px}
+  .lang button{appearance:none;border:0;cursor:pointer;font:inherit;
+    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:700;
+    color:var(--muted);background:transparent;transition:background .2s,color .2s}
+  .lang button.on{background:rgba(255,255,255,.1);color:var(--text)}
+  .lang button:hover{color:var(--text)}
 </style>
 </head>
 <body>
+<div class="lang" id="lang">
+  <button data-lang="zh">中</button>
+  <button data-lang="en">EN</button>
+</div>
 <div class="wrap">
-  <a class="back" href="index.html">← 返回项目一览</a>
+  <a class="back" id="back" href="index.html"></a>
   <div id="head"></div>
   <div class="md" id="md"></div>
 </div>
@@ -75,49 +89,89 @@
 <script src="lib/marked.min.js"></script>
 <script src="projects/manifest.js"></script>
 <script>
+  /* ---------- i18n ---------- */
+  const I18N={
+    zh:{htmlLang:"zh-CN",
+      back:"← 返回项目一览",
+      demoNo:(n,team)=>`第 ${n} 个路演 · ${team}`,
+      hostSuffix:" · 路演",
+      repoLabel:"↗ 代码仓库：",
+      notFound:(id)=>`未找到项目 <code>${id}</code>。`,
+      backToList:"回到一览",
+      empty:(base,err)=>`还没有内容，或本地直接双击打开导致无法读取 Markdown（浏览器限制）。<br>
+        请该队编辑 <code>${base}index.md</code>；本地预览请在仓库根目录运行 <code>python3 -m http.server</code> 后访问 <code>localhost:8000</code>。<br><br>（错误：${err}）`},
+    en:{htmlLang:"en",
+      back:"← Back to projects",
+      demoNo:(n,team)=>`Demo #${n} · ${team}`,
+      hostSuffix:" · presenter",
+      repoLabel:"↗ Repository: ",
+      notFound:(id)=>`Project <code>${id}</code> not found.`,
+      backToList:"Back to list",
+      empty:(base,err)=>`No content yet, or the Markdown could not be read because the page was opened directly (a browser restriction).<br>
+        Ask the team to edit <code>${base}index.md</code>; for local preview run <code>python3 -m http.server</code> in the repo root and open <code>localhost:8000</code>.<br><br>(Error: ${err})`},
+  };
   const params=new URLSearchParams(location.search);
   const id=params.get("p");
+  const lang=(params.get("lang")||localStorage.getItem("lang")||"zh")==="en"?"en":"zh";
+  localStorage.setItem("lang",lang);
+  const T=I18N[lang];
+  const L=(o,f)=>(lang==="en"&&o[f+"_en"])?o[f+"_en"]:o[f];
+
+  document.documentElement.lang=T.htmlLang;
   const TEAMS=window.TEAMS||[];
   const t=TEAMS.find(x=>x.id===id);
   const headEl=document.getElementById("head");
   const mdEl=document.getElementById("md");
 
+  /* back link + language switch carry the current language through navigation */
+  document.getElementById("back").textContent=T.back;
+  document.getElementById("back").href="index.html?lang="+lang;
+  document.querySelectorAll("#lang button").forEach(b=>{
+    if(b.dataset.lang===lang)b.classList.add("on");
+    b.addEventListener("click",()=>{
+      const nl=b.dataset.lang;
+      localStorage.setItem("lang",nl);
+      const u=new URL(location.href);u.searchParams.set("lang",nl);location.href=u.toString();
+    });
+  });
+
   function shade(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`}
 
   if(!t){
-    headEl.innerHTML=`<div class="err">未找到项目 <code>${id||"(空)"}</code>。<a class="repo" href="index.html">回到一览</a></div>`;
+    headEl.innerHTML=`<div class="err">${T.notFound(id||"(空)")}<a class="repo" href="index.html?lang=${lang}">${T.backToList}</a></div>`;
   }else{
-    document.title=`${t.product} · CT 2026 Hackathon`;
+    document.title=`${L(t,"product")} · CT 2026 Hackathon`;
     document.documentElement.style.setProperty("--clr",t.color);
     document.documentElement.style.setProperty("--clr-soft",shade(t.color,.16));
-    const award=t.award?`<div class="award-banner award-${t.award.rank}"><span class="ico">${t.award.icon}</span>${t.award.label}</div>`:"";
-    const members=(t.members||[]).map(m=>`<span class="mb${m===t.presenter?" host":""}">${m}${m===t.presenter?" · 路演":""}</span>`).join("");
-    const repo=t.repo&&t.repo.startsWith("http")?`<a class="repo" href="${t.repo}" target="_blank">↗ 代码仓库：${t.repo.replace("https://","")}</a>`:"";
+    const award=t.award?`<div class="award-banner award-${t.award.rank}"><span class="ico">${t.award.icon}</span>${L(t.award,"label")}</div>`:"";
+    const members=(t.members||[]).map(m=>`<span class="mb${m===t.presenter?" host":""}">${m}${m===t.presenter?T.hostSuffix:""}</span>`).join("");
+    const repo=t.repo&&t.repo.startsWith("http")?`<a class="repo" href="${t.repo}" target="_blank">${T.repoLabel}${t.repo.replace("https://","")}</a>`:"";
     headEl.innerHTML=`
       <div class="hd">
-        <div class="hd-top"><span class="team-chip">第 ${t.order} 个路演 · ${t.team}</span>${award}</div>
-        <h1 class="title">${t.product}</h1>
-        <div class="tagline">${t.tagline||""}</div>
+        <div class="hd-top"><span class="team-chip">${T.demoNo(t.order,L(t,"team"))}</span>${award}</div>
+        <h1 class="title">${L(t,"product")}</h1>
+        <div class="tagline">${L(t,"tagline")||""}</div>
         <div class="members">${members}</div>
         ${repo?("<div>"+repo+"</div>"):""}
       </div>`;
 
     const base=`projects/${t.id}/`;
-    fetch(base+"index.md?v="+Date.now())
-      .then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})
-      .then(src=>{
-        mdEl.innerHTML=marked.parse(src);
-        // 把 Markdown 里的相对路径（图片/视频/链接）指向该队目录
-        mdEl.querySelectorAll("img,source,video,iframe,a").forEach(el=>{
-          const attr=el.tagName==="A"?"href":"src";
-          const v=el.getAttribute(attr);
-          if(v && !/^(https?:|\/|#|data:|mailto:)/.test(v)){el.setAttribute(attr,base+v)}
-        });
-      })
-      .catch(e=>{
-        mdEl.innerHTML=`<div class="err">还没有内容，或本地直接双击打开导致无法读取 Markdown（浏览器限制）。<br>
-        请该队编辑 <code>${base}index.md</code>；本地预览请在仓库根目录运行 <code>python3 -m http.server</code> 后访问 <code>localhost:8000</code>。<br><br>（错误：${e.message}）</div>`;
+    // English pages load index.en.md; fall back to index.md when it's missing.
+    const file=lang==="en"?"index.en.md":"index.md";
+    const render=src=>{
+      mdEl.innerHTML=marked.parse(src);
+      // 把 Markdown 里的相对路径（图片/视频/链接）指向该队目录
+      mdEl.querySelectorAll("img,source,video,iframe,a").forEach(el=>{
+        const attr=el.tagName==="A"?"href":"src";
+        const v=el.getAttribute(attr);
+        if(v && !/^(https?:|\/|#|data:|mailto:)/.test(v)){el.setAttribute(attr,base+v)}
       });
+    };
+    const fetchMd=f=>fetch(base+f+"?v="+Date.now()).then(r=>{if(!r.ok)throw new Error(r.status);return r.text()});
+    fetchMd(file)
+      .catch(()=>{ if(file!=="index.md") return fetchMd("index.md"); throw new Error("404"); })
+      .then(render)
+      .catch(e=>{ mdEl.innerHTML=`<div class="err">${T.empty(base,e.message)}</div>`; });
   }
 </script>
 </body>

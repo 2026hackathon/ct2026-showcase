@@ -164,6 +164,16 @@
 
   footer{margin-top:52px;color:var(--faint);font-size:12.5px;text-align:center}
 
+  /* ---------- language switch ---------- */
+  .lang{position:fixed;top:18px;right:18px;z-index:50;display:flex;gap:2px;
+    background:rgba(22,27,34,.82);backdrop-filter:blur(8px);
+    border:1px solid var(--border);border-radius:999px;padding:3px}
+  .lang button{appearance:none;border:0;cursor:pointer;font:inherit;
+    padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:700;
+    color:var(--muted);background:transparent;transition:background .2s,color .2s}
+  .lang button.on{background:rgba(255,255,255,.1);color:var(--text)}
+  .lang button:hover{color:var(--text)}
+
   @media (prefers-reduced-motion:reduce){
     a.card,a.card.is-tilting{transition:box-shadow .3s ease,border-color .3s ease}
     a.card.is-tilting{transform:none!important}
@@ -178,40 +188,86 @@
 </style>
 </head>
 <body>
+<div class="lang" id="lang">
+  <button data-lang="zh">中</button>
+  <button data-lang="en">EN</button>
+</div>
 <div class="wrap">
   <header class="hero">
-    <h1>CT 2026 Hackathon · 项目一览</h1>
-    <p>按路演顺序排列 · 点击任意项目查看详情、图片与 Demo</p>
+    <h1 id="h-title"></h1>
+    <p id="h-sub"></p>
   </header>
   <div class="grid" id="grid"></div>
-  <footer>每个项目的内容由各队自行维护 · 详见 <code>projects/README.md</code></footer>
+  <footer id="h-foot"></footer>
 </div>
 
 <script src="projects/manifest.js"></script>
 <script>
+  /* ---------- i18n ---------- */
+  const I18N={
+    zh:{htmlLang:"zh-CN",
+      pageTitle:"CT 2026 Hackathon · 项目一览",
+      title:"CT 2026 Hackathon · 项目一览",
+      sub:"按路演顺序排列 · 点击任意项目查看详情、图片与 Demo",
+      foot:'每个项目的内容由各队自行维护 · 详见 <code>projects/README.md</code>',
+      who:(n,p)=>`${n} 人 · 路演 <b>${p}</b>`,
+      go:"查看详情 →",
+      empty:"没有读到 projects/manifest.js"},
+    en:{htmlLang:"en",
+      pageTitle:"CT 2026 Hackathon · Projects",
+      title:"CT 2026 Hackathon · Projects",
+      sub:"Ordered by demo sequence · Click any project for details, images and demos",
+      foot:'Each project\'s content is maintained by its own team · See <code>projects/README.md</code>',
+      who:(n,p)=>`${n} members · presented by <b>${p}</b>`,
+      go:"View details →",
+      empty:"Could not load projects/manifest.js"},
+  };
+  const params=new URLSearchParams(location.search);
+  const lang=(params.get("lang")||localStorage.getItem("lang")||"zh")==="en"?"en":"zh";
+  localStorage.setItem("lang",lang);
+  const T=I18N[lang];
+  // pick localized field with graceful fallback to the Chinese field
+  const L=(o,f)=>(lang==="en"&&o[f+"_en"])?o[f+"_en"]:o[f];
+
+  document.documentElement.lang=T.htmlLang;
+  document.title=T.pageTitle;
+  document.getElementById("h-title").textContent=T.title;
+  document.getElementById("h-sub").textContent=T.sub;
+  document.getElementById("h-foot").innerHTML=T.foot;
+
+  /* language switch: persists choice and carries it through navigation */
+  document.querySelectorAll("#lang button").forEach(b=>{
+    if(b.dataset.lang===lang)b.classList.add("on");
+    b.addEventListener("click",()=>{
+      const nl=b.dataset.lang;
+      localStorage.setItem("lang",nl);
+      const u=new URL(location.href);u.searchParams.set("lang",nl);location.href=u.toString();
+    });
+  });
+
   const TEAMS=(window.TEAMS||[]).slice().sort((a,b)=>(a.order||999)-(b.order||999));
   const grid=document.getElementById("grid");
 
   TEAMS.forEach(t=>{
     const a=document.createElement("a");
     a.className="card "+(t.award?("is-award award-"+t.award.rank):"plain");
-    a.href="team.html?p="+encodeURIComponent(t.id);
+    a.href="team.html?p="+encodeURIComponent(t.id)+"&lang="+lang;
     a.style.setProperty("--clr",t.color);
     const medal=t.award?`<span class="medal">${t.award.icon}</span>`:"";
-    const pill=t.award?`<span class="award-pill">${t.award.label}</span>`:"";
+    const pill=t.award?`<span class="award-pill">${L(t.award,"label")}</span>`:"";
     a.innerHTML=`
       <span class="bar"></span>
       <div class="row1"><span class="seq">${t.order}</span>${medal}
-        <span class="team">${t.team}</span>${pill}</div>
-      <h2>${t.product}</h2>
-      <div class="tag">${t.tagline}</div>
+        <span class="team">${L(t,"team")}</span>${pill}</div>
+      <h2>${L(t,"product")}</h2>
+      <div class="tag">${L(t,"tagline")}</div>
       <div class="ft">
-        <span class="who">${(t.members||[]).length} 人 · 路演 <b>${t.presenter}</b></span>
-        <span class="go">查看详情 →</span>
+        <span class="who">${T.who((t.members||[]).length,t.presenter)}</span>
+        <span class="go">${T.go}</span>
       </div>`;
     grid.appendChild(a);
   });
-  if(TEAMS.length===0){grid.innerHTML='<p style="color:var(--faint)">没有读到 projects/manifest.js</p>';}
+  if(TEAMS.length===0){grid.innerHTML=`<p style="color:var(--faint)">${T.empty}</p>`;}
 
   /* ---------- 3D tilt + mouse shine ---------- */
   (function(){
