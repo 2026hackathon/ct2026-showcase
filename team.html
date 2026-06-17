@@ -51,7 +51,8 @@
   .md pre{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;overflow:auto;margin:16px 0}
   .md pre code{background:none;border:none;padding:0;font-size:13px;line-height:1.6}
   .md blockquote{margin:16px 0;padding:8px 18px;border-left:4px solid var(--clr);background:var(--panel);border-radius:0 10px 10px 0;color:var(--muted)}
-  .md img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);margin:14px 0;display:block}
+  .md img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border);margin:14px 0;display:block;cursor:zoom-in;transition:filter .2s}
+  .md img:hover{filter:brightness(1.06)}
   .md video,.md iframe{max-width:100%;border-radius:12px;border:1px solid var(--border);margin:14px 0;display:block}
   .md table{border-collapse:collapse;width:100%;margin:18px 0;font-size:14px}
   .md th,.md td{border:1px solid var(--border);padding:9px 13px;text-align:left}
@@ -63,6 +64,18 @@
 
   .err{color:var(--faint);padding:40px 0}
   .err code{background:var(--panel-2);padding:2px 7px;border-radius:5px}
+
+  /* ---------- image lightbox ---------- */
+  .lb{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+    background:rgba(5,7,10,.92);backdrop-filter:blur(6px);cursor:zoom-out;
+    opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}
+  .lb.open{opacity:1;visibility:visible}
+  .lb img{max-width:94vw;max-height:92vh;width:auto;height:auto;border-radius:10px;
+    box-shadow:0 24px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+  .lb.open img{transform:scale(1)}
+  .lb .lb-close{position:fixed;top:18px;right:22px;font-size:30px;line-height:1;color:#cdd6e0;
+    background:none;border:0;cursor:pointer;padding:6px;opacity:.8;transition:opacity .2s}
+  .lb .lb-close:hover{opacity:1}
 
   /* ---------- language switch ---------- */
   .lang{position:fixed;top:18px;right:18px;z-index:50;display:flex;gap:2px;
@@ -84,6 +97,11 @@
   <a class="back" id="back" href="index.html"></a>
   <div id="head"></div>
   <div class="md" id="md"></div>
+</div>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <button class="lb-close" id="lb-close" aria-label="关闭">×</button>
+  <img id="lb-img" alt="">
 </div>
 
 <script src="lib/marked.min.js"></script>
@@ -173,6 +191,23 @@
       .then(render)
       .catch(e=>{ mdEl.innerHTML=`<div class="err">${T.empty(base,e.message)}</div>`; });
   }
+
+  /* ---------- image lightbox: click any rendered image to zoom ---------- */
+  (function(){
+    const lb=document.getElementById("lb");
+    const lbImg=document.getElementById("lb-img");
+    const open=src=>{ lbImg.src=src; lb.classList.add("open"); lb.setAttribute("aria-hidden","false");
+      document.body.style.overflow="hidden"; };
+    const close=()=>{ lb.classList.remove("open"); lb.setAttribute("aria-hidden","true");
+      document.body.style.overflow=""; };
+    // delegate so it works for images rendered asynchronously
+    mdEl.addEventListener("click",e=>{
+      const img=e.target.closest("img");
+      if(img && mdEl.contains(img)) open(img.currentSrc||img.src);
+    });
+    lb.addEventListener("click",close);
+    document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&lb.classList.contains("open"))close(); });
+  })();
 </script>
 </body>
 </html>
